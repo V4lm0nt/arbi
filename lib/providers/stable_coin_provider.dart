@@ -15,6 +15,11 @@ class StableCoinProvider with ChangeNotifier {
     final stableCoins = coinResponseFromJson(response.body);
     coins.addAll(stableCoins);
     notifyListeners();
+    //print(coins);
     return coins;
   }
 }
+
+/*
+{argenbtc: , bitex: , buenbit: , ripio: , ripioexchange: , satoshitango: , cryptomkt: , decrypto: , latamex: , bitso: , copter: , letsbit: , fiwind: , lemoncash: , bitmonedero: , belo: , tiendacrypto: , saldo: , kriptonmarket: , calypso: , pluscrypto: , bybit: }
+ */

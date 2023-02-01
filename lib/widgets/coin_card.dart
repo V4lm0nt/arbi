@@ -56,8 +56,8 @@ class CoinCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'ArgenBTC',
-                      style: TextStyle(
+                      name,
+                      style: const TextStyle(
                           color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                   ],
@@ -67,7 +67,7 @@ class CoinCard extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text(
+                      const Text(
                         'Compra',
                         style: TextStyle(
                             color: Colors.white,
@@ -75,7 +75,7 @@ class CoinCard extends StatelessWidget {
                             fontSize: 20),
                       ),
                       Text('\$$compra',
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 18)),
@@ -87,13 +87,13 @@ class CoinCard extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text('Venta',
+                      const Text('Venta',
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 20)),
                       Text('\$$venta',
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 18)),
