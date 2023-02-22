@@ -1,61 +1,22 @@
-import 'dart:math';
-
 import 'package:arbi/providers/stable_coin_provider.dart';
+import 'package:arbi/ui/background.dart';
 import 'package:arbi/widgets/coin_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-          body: Stack(
-        children: const [
-          _FondoApp(),
-          _MainScroll(),
-        ],
-      )),
-    );
-  }
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _FondoApp extends StatelessWidget {
-  const _FondoApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
-
-    final gradiente = Container(
-      width: double.infinity,
-      height: double.infinity,
-      decoration: const BoxDecoration(
-          gradient: LinearGradient(
-              begin: FractionalOffset(0.0, 0.6),
-              end: FractionalOffset(0.0, 0.1),
-              colors: [
-            Color.fromRGBO(52, 54, 101, 1.0),
-            Color.fromRGBO(35, 37, 57, 1.0)
-          ])),
-    );
-
-    return Stack(
-      children: [gradiente],
-    );
-  }
-}
-
-class _MainScroll extends StatelessWidget {
-  const _MainScroll();
-
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final stableCoins = Provider.of<StableCoinProvider>(context);
-    final List<Map> stableCoinsList = [
+    List<Map> stableCoinsList = [
       {
         'nombre': 'ArgenBTC',
         'compra': stableCoins.coins['argenbtc']?.ask,
@@ -211,114 +172,119 @@ class _MainScroll extends StatelessWidget {
         'web': 'https://www.bybit.com/'
       },
     ];
+    return SafeArea(
+      child: Scaffold(
+          body: Stack(
+        children: [
+          const HeadersScreen(
+            icon: Icons.money_rounded,
+          ),
+          _MainScroll(stableCoinsList),
+        ],
+      )),
+    );
+  }
+}
+
+class _MainScroll extends StatefulWidget {
+  final List<Map> monedas;
+  const _MainScroll(this.monedas);
+
+  @override
+  State<_MainScroll> createState() => _MainScrollState();
+}
+
+class _MainScrollState extends State<_MainScroll> {
+  @override
+  Widget build(BuildContext context) {
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
       slivers: [
         SliverPersistentHeader(
             delegate: _SliverCustomHeaderDelegate(
-                child: Stack(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 30.0, vertical: 20.0),
-                      child: Container(
-                        width: 350,
-                        height: 200,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25),
-                            gradient: const LinearGradient(colors: [
-                              Color.fromARGB(255, 195, 0, 255),
-                              Color.fromARGB(255, 144, 0, 255)
-                            ])),
-                      ),
-                    ),
-                    _Titulo(),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Column(
-                              children: [
-                                MaterialButton(
-                                  onPressed: () {},
-                                  child: Icon(Icons.currency_bitcoin),
-                                ),
-                                Text('Criptomonedas')
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                Container(
-                                  color: Colors.white.withOpacity(0.3),
-                                  child: MaterialButton(
-                                    onPressed: () {},
-                                    child: Icon(Icons.currency_bitcoin),
-                                  ),
-                                ),
-                                Text('StableCoins')
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                MaterialButton(
-                                  onPressed: () {},
-                                  child: Icon(Icons.currency_bitcoin),
-                                ),
-                                Text('Dolar')
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-                minheight: 250,
-                maxheight: 300)),
+                child: const _Titulo(), minheight: 130, maxheight: 250)),
         SliverList(
             delegate: SliverChildListDelegate([
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               MaterialButton(
-                //TODO:sort list coins
-                onPressed: () {},
+                onPressed: () {
+                  setState(() {
+                    widget.monedas.sort((m1, m2) {
+                      return m1["compra"].compareTo(m2["compra"]);
+                    });
+                  });
+                },
                 child: Row(
                   children: const [
-                    Icon(Icons.arrow_upward),
-                    Text('Compra'),
-                    Icon(Icons.arrow_downward)
+                    Icon(
+                      Icons.arrow_upward,
+                      color: Colors.white,
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text(
+                      'Compra',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Icon(
+                      Icons.arrow_downward,
+                      color: Colors.white,
+                    )
                   ],
                 ),
               ),
               MaterialButton(
-                //TODO:sort list coins
-                onPressed: () {},
+                onPressed: () {
+                  setState(() {
+                    widget.monedas.sort((m1, m2) {
+                      return m2["venta"].compareTo(m1["venta"]);
+                    });
+                  });
+                },
                 child: Row(
                   children: const [
-                    Icon(Icons.arrow_upward),
-                    Text('Venta'),
-                    Icon(Icons.arrow_downward)
+                    Icon(
+                      Icons.arrow_upward,
+                      color: Colors.white,
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text('Venta', style: TextStyle(color: Colors.white)),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Icon(
+                      Icons.arrow_downward,
+                      color: Colors.white,
+                    )
                   ],
                 ),
               ),
             ],
           ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.05,
-          ),
-          ...stableCoinsList.map((e) => GestureDetector(
-                onTap: () {
-                  //TODO:launcher para web
-                  //print(e['nombre']);
+          //SizedBox(
+          //  height: MediaQuery.of(context).size.height * 0.1,
+          //),
+          ...widget.monedas.map((coin) => GestureDetector(
+                onTap: () async {
+                  final Uri url = Uri.parse('${coin['web']}');
+
+                  if (!await launchUrl(url)) {
+                    throw Exception('Could not launch url');
+                  }
                 },
                 child: CoinCard(
-                    name: e['nombre'],
-                    compra: e['compra'],
-                    venta: e['venta'],
-                    image: e['logo']),
+                    name: coin['nombre'],
+                    compra: coin['compra'] ?? 0,
+                    venta: coin['venta'] ?? 0,
+                    image: coin['logo']),
               ))
         ])),
       ],

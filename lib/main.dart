@@ -13,12 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) => StableCoinProvider(),
-          lazy: false,
-        )
-      ],
+      providers: [ChangeNotifierProvider(create: (_) => StableCoinProvider())],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Material App',
